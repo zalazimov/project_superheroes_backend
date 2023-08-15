@@ -2,7 +2,7 @@ const cors = require("cors");
 const express = require("express");
 const morgan = require("morgan");
 
-const gamesController = require("./controller/gameController");
+const heroesController = require("./controller/heroController");
 
 const app = express();
 
@@ -10,10 +10,10 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-app.use("/games", gamesController);
+app.use("/heroes", heroesController);
 
 app.get("/", (req, res) => {
-  res.send("Welcome to Gameroom");
+  res.send("Welcome to Superhero Central");
 });
 app.get("/notfound", (req, res) => {
   res.status(404).send("invalid request");
