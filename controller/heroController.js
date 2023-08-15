@@ -8,15 +8,17 @@ const {
   getHeroesByName,
   getHeroById,
   addHero,
+  deleteHero,
+  updateHeroRow,
 } = require("../queries/heroes");
 
 const {
   checkSearch,
   checkNum,
-  validateURL,
   checkId,
   checkPost,
   checkBoolean,
+  checkPut,
 } = require("../validations/checkValidations");
 
 router.get("/", async (req, res) => {
@@ -69,6 +71,26 @@ router.post("/", checkPost, checkBoolean, async (req, res) => {
   const newHero = await addHero(req.body);
   if (newHero[0]) res.status(201).json(newHero[0]);
   else res.status(500).json({ err: "pg error" });
+});
+
+router.delete("/:id", checkId, async (req, res) => {
+  const id = req.params.id;
+  const status = await deleteHero(id);
+  if (status[0]) res.json(status[0]);
+  else res.redirect("/notfound");
+});
+
+router.put("/:id", checkId, checkPut, checkBoolean, async (req, res) => {
+  try {
+    const updateHero = await updateHeroRow(req.body, req.params.id);
+    if (updateHero.length === 0) {
+      res.status(404).json("This hero was not found");
+    } else {
+      res.status(200).json(updateHero[0]);
+    }
+  } catch (e) {
+    res.status(400).json({ error: e });
+  }
 });
 
 module.exports = router;

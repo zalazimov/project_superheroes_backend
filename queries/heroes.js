@@ -90,6 +90,38 @@ async function addHero(args) {
   }
 }
 
+//deleting a hero entry
+async function deleteHero(args) {
+  try {
+    const deleted = await db.any(
+      `DELETE FROM superheroes where id = ${args} RETURNING *`
+    );
+    return deleted;
+  } catch (e) {
+    return e;
+  }
+}
+
+//update a hero entry
+async function updateHeroRow(args, id) {
+  let arr = Object.keys(args);
+  let vals = [...Object.values(args), id];
+  try {
+    const updateHero = await db.any(
+      `UPDATE superheroes SET ${arr
+        .map((item, i) => {
+          return `${item} = $${i + 1}`;
+        })
+        .join(", ")} where
+        id = $${vals.length} RETURNING *`,
+      vals
+    );
+    return updateHero;
+  } catch (e) {
+    return e;
+  }
+}
+
 module.exports = {
   getHeroes,
   getHeroesLimit,
@@ -98,4 +130,6 @@ module.exports = {
   getHeroesByName,
   getHeroById,
   addHero,
+  deleteHero,
+  updateHeroRow,
 };

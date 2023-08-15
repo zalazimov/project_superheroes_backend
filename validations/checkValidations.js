@@ -56,6 +56,46 @@ const checkPost = (req, res, next) => {
   }
 };
 
+const checkPut = (req, res, next) => {
+  let arr = Object.keys(req.body);
+
+  if (arr.length == 0) {
+    res.status(400).json({ err: "make new update body" });
+  } else {
+    for (let n of arr) {
+      if (
+        ![
+          "name",
+          "real_name",
+          "history_text",
+          "powers_text",
+          "intelligence_score",
+          "speed_score",
+          "power_score",
+          "combat_score",
+          "superpowers",
+          "aliases",
+          "place_of_birth",
+          "first_appearance",
+          "creator",
+          "occupation",
+          "relatives",
+          "gender",
+          "type_race",
+          "height",
+          "weight",
+          "img",
+          "is_favorite",
+          "rating",
+        ].includes(n)
+      ) {
+        res.status(400).json({ err: "make new update body" });
+      }
+    }
+    next();
+  }
+};
+
 module.exports = {
   checkSearch,
   checkNum,
@@ -63,4 +103,5 @@ module.exports = {
   checkId,
   checkPost,
   checkBoolean,
+  checkPut,
 };
