@@ -71,6 +71,25 @@ async function getHeroById(id) {
   }
 }
 
+//create a new hero entry
+async function addHero(args) {
+  let vals = Object.values(args);
+  try {
+    const newHero = await db.any(
+      `INSERT INTO superheroes (${Object.keys(args).join(",")}) 
+        VALUES (${vals
+          .map((item, i) => {
+            return `$${i + 1}`;
+          })
+          .join(",")}) RETURNING *`,
+      vals
+    );
+    return newHero;
+  } catch (e) {
+    return e;
+  }
+}
+
 module.exports = {
   getHeroes,
   getHeroesLimit,
@@ -78,4 +97,5 @@ module.exports = {
   getHeroesBySubstring,
   getHeroesByName,
   getHeroById,
+  addHero,
 };

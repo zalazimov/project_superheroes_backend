@@ -7,6 +7,7 @@ const {
   getHeroesBySubstring,
   getHeroesByName,
   getHeroById,
+  addHero,
 } = require("../queries/heroes");
 
 const {
@@ -14,6 +15,8 @@ const {
   checkNum,
   validateURL,
   checkId,
+  checkPost,
+  checkBoolean,
 } = require("../validations/checkValidations");
 
 router.get("/", async (req, res) => {
@@ -60,6 +63,12 @@ router.get("/:id", checkId, async (req, res) => {
   } else {
     res.status(500).json({ err: "pg error" });
   }
+});
+
+router.post("/", checkPost, checkBoolean, async (req, res) => {
+  const newHero = await addHero(req.body);
+  if (newHero[0]) res.status(201).json(newHero[0]);
+  else res.status(500).json({ err: "pg error" });
 });
 
 module.exports = router;

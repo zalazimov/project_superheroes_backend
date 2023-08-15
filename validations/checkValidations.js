@@ -1,6 +1,6 @@
 const checkSearch = (req, res, next) => {
   if (!req.query.name || req.query.name.length < 2) {
-    res.status(400).json({ error: "Please enter a valid board game name" });
+    res.status(400).json({ error: "Please enter a valid superhero name" });
   } else next();
 };
 
@@ -29,9 +29,38 @@ const checkId = (req, res, next) => {
   } else next();
 };
 
+const checkBoolean = (req, res, next) => {
+  if (typeof req.body.is_favorite !== "boolean") {
+    res.status(400).json({ error: "is_favorite must be a boolean" });
+  } else {
+    next();
+  }
+};
+
+const checkPost = (req, res, next) => {
+  let count = 0;
+  let arr = Object.keys(req.body);
+  if ((arr.length && arr.length < 5) || arr.length == 0) {
+    res.status(400).json({ err: "make new post body" });
+  } else {
+    ["name", "history_text", "superpowers", "creator", "is_favorite"].forEach(
+      (item) => {
+        if (item in req.body) count++;
+      }
+    );
+    if (count < 5) {
+      res.status(400).json({ err: "make new post body" });
+    } else {
+      next();
+    }
+  }
+};
+
 module.exports = {
   checkSearch,
   checkNum,
   validateURL,
   checkId,
+  checkPost,
+  checkBoolean,
 };
